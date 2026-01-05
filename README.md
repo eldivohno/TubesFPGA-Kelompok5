@@ -54,11 +54,7 @@ Tugas besar ini merancang sistem pemrosesan sinyal digital berupa Filter FIR (Fi
    - Akumulator 10-bit  
    - Output 8-bit  
 5. Metode Filter: 4-Tap Moving Average  
-
-   \[
-   y[n] = \frac{\sum_{i=1}^{n} x_i}{n}
-   \]
-
+   y[n] = (x1+x2+...+x(n-1)+xn)/n
 6. Input:  
    - KEY[0]: Reset Asinkron (Active Low).  
    - KEY[1]: Step Trigger (Active Low) dengan Edge Detection.  
