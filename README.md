@@ -274,7 +274,6 @@ endmodule
 
 module tb_top_system();
 
-    // 1. Deklarasi Sinyal (Inputs = reg, Outputs = wire)
     reg CLOCK_50;
     reg [3:0] KEY;
     reg [9:0] SW;
@@ -283,8 +282,6 @@ module tb_top_system();
     wire [6:0] HEX0;
     wire [6:0] HEX1;
 
-    // 2. Instansiasi Unit Under Test (UUT)
-    // Menghubungkan testbench ke modul utama Anda
     top_system uut (
         .CLOCK_50(CLOCK_50), 
         .KEY(KEY), 
@@ -294,74 +291,60 @@ module tb_top_system();
         .HEX1(HEX1)
     );
 
-    // 3. Generator Clock (50MHz)
-    // Periode = 20ns (1/50MHz) -> Toggle setiap 10ns
     initial begin
         CLOCK_50 = 0;
         forever #10 CLOCK_50 = ~CLOCK_50;
     end
 
-    // 4. Skenario Pengujian (Stimulus)
     initial begin
-        // --- KONDISI AWAL ---
         $display("=== SIMULASI DIMULAI ===");
-        KEY = 4'b1111; // Tombol Active Low (1 = Tidak ditekan)
-        SW = 10'b0;    // Switch Bawah (Input = 10)
+        KEY = 4'b1111;
+        SW = 10'b0;
         #100;
 
-        // --- STEP 1: RESET SISTEM ---
         $display("Time: %0t | Action: RESET Ditekan", $time);
-        KEY[0] = 0;    // Tekan Reset
-        #40;           // Tahan sebentar
-        KEY[0] = 1;    // Lepas Reset
+        KEY[0] = 0;
         #40;
-        // Cek nilai internal (mengintip sinyal filter_out di dalam modul)
-        $display("Status Awal: Filter Output = %d (Harusnya 10)", uut.filter_out);
-
-        // --- STEP 2: PERSIAPAN INPUT BARU ---
-        $display("Time: %0t | Action: Ubah SW[0] ke Atas (Input 90)", $time);
-        SW[0] = 1;     // Set input target ke 90
+        KEY[0] = 1;
         #40;
 
-        // --- STEP 3: TEKAN TOMBOL STEP BERULANG KALI ---
+        $display("Status Awal: Filter Output = %d", uut.filter_out);
+
+        $display("Time: %0t | Action: Ubah SW[0] ke Atas", $time);
+        SW[0] = 1;
+        #40;
+
+        press_step_button();
+        $display("Step 1: Output = %d", uut.filter_out);
         
-        // Tekanan Pertama
-        press_step_button(); 
-        $display("Step 1: Output = %d (Harusnya 30)", uut.filter_out);
+        press_step_button();
+        $display("Step 2: Output = %d", uut.filter_out);
         
-        // Tekanan Kedua
-        press_step_button(); 
-        $display("Step 2: Output = %d (Harusnya 50)", uut.filter_out);
+        press_step_button();
+        $display("Step 3: Output = %d", uut.filter_out);
         
-        // Tekanan Ketiga
-        press_step_button(); 
-        $display("Step 3: Output = %d (Harusnya 70)", uut.filter_out);
+        press_step_button();
+        $display("Step 4: Output = %d", uut.filter_out);
         
-        // Tekanan Keempat
-        press_step_button(); 
-        $display("Step 4: Output = %d (Harusnya 90)", uut.filter_out);
-        
-        // Tekanan Kelima (Harusnya tetap 90 karena sudah stabil)
-        press_step_button(); 
-        $display("Step 5: Output = %d (Harusnya Stabil 90)", uut.filter_out);
+        press_step_button();
+        $display("Step 5: Output = %d", uut.filter_out);
 
         $display("=== SIMULASI SELESAI ===");
-        $stop; // Memberhentikan simulasi
+        $stop;
     end
 
-    // TUGAS TAMBAHAN: Prosedur Menekan Tombol
-    // Mensimulasikan tombol ditekan lalu dilepas
     task press_step_button;
         begin
             #20;
-            KEY[1] = 0; // Tekan Tombol (Active Low)
-            #40;        // Tahan selama 2 clock cycle
-            KEY[1] = 1; // Lepas Tombol
-            #40;        // Tunggu filter memproses
+            KEY[1] = 0;
+            #40;
+            KEY[1] = 1;
+            #40;
         end
     endtask
 
 endmodule
+
 ``` 
 
 
