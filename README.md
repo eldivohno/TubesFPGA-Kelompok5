@@ -244,7 +244,7 @@ module top_system (
     end
 
     assign sum = x0 + x1 + x2 + x3;
-    assign filter_out = sum[9:2];
+    assign filter_out = sum/4;
 
     reg [3:0] digit_satuan;
     reg [3:0] digit_puluhan;
